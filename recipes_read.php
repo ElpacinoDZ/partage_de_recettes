@@ -12,7 +12,7 @@ if (!isset($getData['id']) || !is_numeric($getData['id'])) {
 
 // Récupération de la recette et des commentaires
 $retrieveRecipeStatementWithCommentsAndRating = $mysqlClient->prepare(
-    'SELECT r.title, r.recipe, r.author, c.comment,c.rating, u.full_name
+    'SELECT r.title, r.recipe, r.author, c.comment, c.rating , c.date ,u.full_name
     FROM recipes r
     LEFT JOIN comments c ON r.recipe_id = c.recipe_id
     LEFT JOIN users u ON c.user_id = u.user_id
@@ -41,7 +41,8 @@ foreach ($recipeWithComments as $row) {
         $recipe['comments'][] = [
             'comment' => $row['comment'],
             'full_name' => $row['full_name'],
-            'rating' => $row['rating']
+            'rating' => $row['rating'],
+            'date' => $row['date']
         ];
         if (!empty($row['rating'])) {
             $totalRating += $row['rating'];
@@ -85,7 +86,7 @@ $averageRating = $ratingCount > 0 ? number_format($totalRating / $ratingCount,2)
             transition: all 0.3s ease-in-out;
         }
         .star-rating label:hover, .star-rating label:hover ~ label, .star-rating input[type="radio"]:checked ~ label {
-            color:rgb(246, 238, 6);
+            color:rgb(4, 78, 237);
         }
     </style>
 </head>
@@ -98,9 +99,9 @@ $averageRating = $ratingCount > 0 ? number_format($totalRating / $ratingCount,2)
             <article class="col">
                 <p><?php echo nl2br(htmlspecialchars($recipe['recipe'])); ?></p>
             </article>
-            <aside class="col">
-                <p><i>Contribuée par <?php echo htmlspecialchars($recipe['author']); ?></i></p>
-            </aside>
+            
+                <p><i>Par <?php echo htmlspecialchars($recipe['author']); ?></i></p>
+           
         </div>
 
         <h2>Commentaires</h2>
@@ -113,6 +114,7 @@ $averageRating = $ratingCount > 0 ? number_format($totalRating / $ratingCount,2)
                         <strong><?php echo htmlspecialchars($comment['full_name']); ?>:</strong>
                         <?php echo htmlspecialchars($comment['comment']); ?>
                     </li>
+                    <?php echo htmlspecialchars($comment['date']); ?>
                 <?php endforeach; ?>
                
             </ul>
