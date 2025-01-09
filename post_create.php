@@ -51,3 +51,4 @@ $insertRecipe->execute([
     <h1>Recette ajoutée !</h1>
     <p>Votre recette a bien été ajoutée !</p>
 </body>
+</html>
